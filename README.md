@@ -1,4 +1,5 @@
 # **Password Generator**
+## Author: GamerBoi801
 
 Welcome to the ***Password Generator***! In today's digital age, having a strong and secure password is more important than ever. This project allows users to generate secure and customizable passwords based on their specific requirements. Whether you need a password for a new account, want to enhance your security, or simply wish to create unique passwords for various applications, this tool can help you create strong passwords quickly and easily!
 
