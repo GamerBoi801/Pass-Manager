@@ -36,8 +36,8 @@ This tool utilizes a random selection algorithm to ensure strong and unpredictab
 
 ## Getting Started
 
-To get started with the Password Generator, **clone this repo**:
+To get started with the Password Generator:
 
-1. **Clone the Repository**: Begin by cloning this repository to your local machine using Git:
+ **Clone the Repository**: Begin by cloning this repository to your local machine using Git:
    ```bash
    git clone https://github.com/GamerBoi801/Pass-Manager.git
