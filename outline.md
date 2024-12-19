@@ -82,3 +82,6 @@
 -  Write user documentation and guides on how to use the CLI tool.
 -  Prepare code documentation (docstrings, comments).
 -  Deploy the application as a package or executable.
+
+
+
