@@ -85,3 +85,7 @@
 
 
 
+# My plan
+### first time use
+ - initaializes db
+ - 
