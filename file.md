@@ -10,6 +10,7 @@
   - `get_passwords()`: Retrieve all stored passwords.
   - `delete_password(service)`: Remove a password entry by service name.
   - `update_password(service, new_password)`: Update an existing password.
+  - `varifying_master_password()`: verifies master password.
 
 ### 1.2 `user.py`
 - **Purpose**: Handle user interactions and CLI functionalities using argparse.
