@@ -1,5 +1,6 @@
 import sqlite3, bcrypt
 from user import validate_master_password
+from rehpic import encrypt_password, decrypt_password
 
 def initialize_db():
     conn = sqlite3.connect('password_manager.db')
@@ -33,7 +34,7 @@ def add_password(service, username, password):
     conn = sqlite3.connect('password_manager.db')
     c = conn.cursor()
 
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) 
+    hashed_password = encrypt_password(password) 
     
     # adding password to the db
     c.execute('''
@@ -55,12 +56,32 @@ def get_password(service):
                   SELECT master_password FROM user WHERE id = 1;
                   ''')
         result = c.fetchone()
-        
-    else:
-        print('ACCESS DENIED: Wrong master password')
+        conn.commit()
+        conn.close()
 
+        return decrypt_password(result)
 
 def delete_password(service):
-    return 1
-            
+    if validate_master_password():
+        conn = sqlite3.connect('password_manager.db')
+        c =conn.cursor()
+
+        c. execute('''
+                DELETE FROM Passwords WHERE service_name = ?''', service)
+        conn.commit()
+        conn.close()
+
+def update_password(service, new_password):
+    if validate_master_password():
+        conn = sqlite3.connect('password_manager.db')
+        c = conn.cursor()
+    
+        hashed = encrypt_password(new_password)
+        #updates the password field with the new one
+        c. execute('''
+                UPDATE Passswords SET password = ?
+                    WHERE service_name = ?;
+                ''', (hashed, service))
         
+        conn.commit()
+        conn.close()

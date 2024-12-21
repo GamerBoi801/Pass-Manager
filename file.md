@@ -26,6 +26,11 @@
 - **Functions to Include**:
   - `main()`: Coordinate the flow of the application, calling functions from `user.py` and `db.py`.
 
+### 1.4 `rehpic.py`
+- **Purpose**: contains the encrypting and decryting algorithms
+**Functions**: 
+- `encrypt_password()`
+- `decrypt_password()`
 ## 2. Additional Files
 
 ### 2.1 `utils.py`
@@ -45,6 +50,7 @@
 - **Purpose**: Handle command-line interface interactions more extensively.
 - **Functions to Include**:
   - Implement subcommands (e.g., list, add, delete) using argparse for better organization.
+
 
 ## 3. Suggested Routines
 

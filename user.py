@@ -44,6 +44,10 @@ def validate_master_password():
             else:
                 print('No master password found in the db. ')
                 return False
+        else:
+            print('ACCESS DENIED: WRONG MASTER PASSWORD. ')
+            return False
+        
     except sqlite3.Error as e:
         print(e)
     finally:
