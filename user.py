@@ -1,5 +1,5 @@
 #handles all the user realted operations
-import hashlib, getpass, os
+import hashlib, getpass, os, sqlite3, bcrypt
 from db import initialize_db, execute_query, fetch_query
 
 def user_login():
@@ -24,3 +24,30 @@ def first_time_user():
     return user_login() #calls user_login function after intialization
 
 
+def validate_master_password():
+    user_attempt = input('Please enter the Master Password: ')
+
+    conn = sqlite3.connect('password_manager.db')
+    c = conn.cursor()
+
+    try:
+        c.execute('''
+            SELECT master_password FROM user WHERE id = 1;
+            ''')
+        stored_master_password = c.fetchone()
+
+        if stored_master_password:
+            stored_master_password = stored_master_password[0]
+            if bcrypt.checkpw(user_attempt.encode(), stored_master_password.encode()):
+                c.close()
+                return True
+            else:
+                print('No master password found in the db. ')
+                return False
+    except sqlite3.Error as e:
+        print(e)
+    finally:
+        c.close()
+        conn.close()
+
+    

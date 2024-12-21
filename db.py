@@ -1,4 +1,5 @@
 import sqlite3, bcrypt
+from user import validate_master_password
 
 def initialize_db():
     conn = sqlite3.connect('password_manager.db')
@@ -46,35 +47,20 @@ INSERT INTO Passwords(service_name, username, password)
     conn.close()
 
 def get_password(service):
-    user_master_password = input('Please enter your Master Password: ') #prompts the user for the master password
+    if validate_master_password():
+        conn = sqlite3.connect('password_manager.db')
+        c = conn.cursor()
 
-    conn = sqlite3.connect('password_manager.db')
-    c = conn.cursor()
-
-    #retreiving the master password from the db
-    c.execute(''' 
-            SELECT master_password FROM id = 1  
-            ''') # in the meantime provided there is only one user
-    
-    result = c.fetchone() #fetches the result from the db
-    
-    if result:
-        stored_hash_password = result[0]
-        if bcrypt.checkpw(user_master_password, stored_hash_password):
-            # retrives the password from the db
-            c.execute('''
-            SELECT * FROM Passwords WHERE service_name = ?
-            ,(service);
-            ''' )
-            password_entry = c.fetchone()
-
-            if password_entry:
-                return password_entry[0]
-            else:
-                print('Password not found')
-        else:
-            print('Master Password is incorrect, ACCESS DENIED')
+        c.execute('''
+                  SELECT master_password FROM user WHERE id = 1;
+                  ''')
+        result = c.fetchone()
         
+    else:
+        print('ACCESS DENIED: Wrong master password')
 
+
+def delete_password(service):
+    return 1
             
         
