@@ -15,10 +15,9 @@
 ### 1.2 `user.py`
 - **Purpose**: Handle user interactions and CLI functionalities using argparse.
 - **Functions to Include**:
-  - `first_use()`: Set up the master password and username for the first time.
+  - `first_use()`: TO use needs to check whether the db exists, and if not Set up the master password and username for the first time.
   - `parse_args()`: Use argparse to define and parse command-line arguments.
   - `list_passwords()`: Display all stored passwords in a user-friendly format.
-  - `add_new_password()`: Collect input from the user to add a new password.
   - `vlaidate_master_password()`: validates master password for the user_attempt parameter
 
 ### 1.3 `main.py`

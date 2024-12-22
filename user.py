@@ -1,27 +1,49 @@
 #handles all the user realted operations
-import hashlib, getpass, os, sqlite3, bcrypt
-from db import initialize_db, execute_query, fetch_query
+import bcrypt, sqlite3, pyfiglet
+from db import initialize_db
+from rehpic import encrypt_password, decrypt_password
+from prettytable import PrettyTable
 
-def user_login():
-    master_password = getpass.getpass("Enter master password: ")
-    hashed_password = hashlib.sha256(master_password.encode()).hexdigest()
 
-    stored_hash = fetch_query("SELECT  master_password_hash FROM users LIMIT 1")
-
-    if stored_hash and stored_hash[0][0] == hashed_password:
-        print("Login successful")
-        return True
-    else:
-        print('Invalid Master Password')
-        return False
-
-def first_time_user():
-    db_exisits = os.path.exists('password_manager.db') #checking if db exists
+def first_use():
+    initialize_db()
     
-    if not db_exisits:
-        initialize_db() # creats db if not exists
+    # welcome message
+    txt = 'Welcome to the Password Manager!! '
+    print(pyfiglet.figlet_format(txt))
 
-    return user_login() #calls user_login function after intialization
+    # creting and saving the master password and username
+    username = input('Please Enter a username: ')
+    
+    while True:
+        password1 = input('Please Enter a Master Password: ')
+        password2 = input('Re-enter the Master Password: ')
+        if password1 == password2:
+            break
+        print('Passwords do not match! Try Again')
+
+    # additions to the database
+    conn = sqlite3.connect('password_manager.db')
+    c = conn.cursor()
+    
+    hashed_password = encrypt_password(password2)  
+    
+    try:
+        c.execute('''
+            INSERT INTO users (username, master_password_hash) 
+            VALUES (?, ?)
+        ''', (username, hashed_password))
+        conn.commit()  
+
+        print('Username and master password are set!!')
+        
+    except sqlite3.Error as e:
+        print(f"An error occurred while inserting data: {e}")
+    
+    finally:
+        c.close()
+        conn.close() 
+
 
 
 def validate_master_password():
@@ -54,4 +76,14 @@ def validate_master_password():
         c.close()
         conn.close()
 
+def list_passwords():
+    table = PrettyTable()
+    table.field_names = ["Service Name", "username", "Password"]
     
+    conn = sqlite3.connect('password_manager.db')
+    c = conn.cursor()
+
+    c.execute('''SELECT service_name, username, password 
+              FROM Passwords;
+              ''')
+    results = c.fetchall()
