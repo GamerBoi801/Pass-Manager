@@ -77,6 +77,7 @@ def validate_master_password():
         conn.close()
 
 def list_passwords():
+    table = PrettyTable()
     #displays passwords in a pretty table 
 
     conn = sqlite3.connect('password_manager.db')
@@ -86,4 +87,8 @@ def list_passwords():
               FROM Passwords;
               ''')
     results = c.fetchall()
+    
+    #extracting column names
+    column_names = [description[0] for description in c.description()]
+    
 
