@@ -7,7 +7,7 @@
 - **Functions to Include**:
   - `initialize_db()`: Create the database and tables if they don't exist.
   - `add_password(service, username, password)`: Insert a new password entry.
-  - `get_passwords()`: Retrieve all stored passwords.
+  - `get_password(service)`: Retrieve the stored password for that serivce in the parameter.
   - `delete_password(service)`: Remove a password entry by service name.
   - `update_password(service, new_password)`: Update an existing password.
 
@@ -25,11 +25,6 @@
 - **Functions to Include**:
   - `main()`: Coordinate the flow of the application, calling functions from `user.py` and `db.py`.
 
-### 1.4 `rehpic.py`
-- **Purpose**: contains the encrypting and decryting algorithms
-**Functions**: 
-- `encrypt_password()`
-- `decrypt_password()`
 ## 2. Additional Files
 
 ### 2.1 `utils.py`
@@ -37,7 +32,8 @@
 - **Functions to Include**:
   - `encrypt_password(password)`: Encrypt a given password before storing it.
   - `decrypt_password(encrypted_password)`: Decrypt a stored password when retrieving it.
-  - `generate_random_password(length)`: Generate a strong random password.
+  - `generate_random_password(length)`: Generate a strong ra
+ndom password.
 
 ### 2.2 `config.py`
 - **Purpose**: Store configuration settings for the application.

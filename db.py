@@ -1,6 +1,6 @@
 import sqlite3, bcrypt
 from user import validate_master_password
-from rehpic import encrypt_password, decrypt_password
+from utils import encrypt_password, decrypt_password
 
 def initialize_db():
     conn = sqlite3.connect('password_manager.db')

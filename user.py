@@ -1,7 +1,7 @@
 #handles all the user realted operations
 import bcrypt, sqlite3, pyfiglet
 from db import initialize_db
-from rehpic import encrypt_password, decrypt_password
+from utils import encrypt_password, decrypt_password
 from prettytable import PrettyTable
 import argparse
 
@@ -102,5 +102,40 @@ def list_passwords():
 
     print(table) #outputs the table
 
-def parse_args(command):
-    
+def parse_args():
+    #creates the parser
+    parser = argparse.ArgumentParser(description='Password Manager Tool')
+
+    #subparsers for different commands
+    subparsers = parser.add_subparsers(dest='command')
+
+    #subparser for add_password(service, username, password)
+    add_parser = subparsers.add_parser('add', help='Add a new password')
+    add_parser.add_argument('service', help='Name of the service')
+    add_parser.add_argument('username', help='Username for that service')
+    add_parser.add_argument('password', help='Password for that service')
+
+    #subparser for get_password(service)
+    get_parser = subparsers.add_parser('get', help='Fetches the password for a service')
+    get_parser.add_argument('service', help='Name of the service')
+
+    #subparser for first_use()
+    first_parser = subparsers.add_parser('first-use', help='Initializes the program for first use')
+
+    #subparser for list_passwords()
+    list_parser = subparsers.add_parser('list-all', help='Lists all the passwords stored in the db')
+
+    #subparser for update_password(service, new_password)
+    update_parser = subparsers.add_parser('update', help='Command to update a password for a service')
+    update_parser.add_argument('service', help='Service for which the password is updated')
+    update_parser.add_argument('new_password', help='The new updated password')
+
+    #subparser delete_password(service)
+    del_parser = subparsers.add_parser('delete', help='Delete the password for that service')
+    del_parser.add_argument('service', help='Service for which the password would be deleted')
+
+    #subparser generate_random_password(length)
+    create_parser = subparsers.add_parser('create', help='Creates a new random password')
+    create_parser.add_argument('length', type=int, help='The length of the password to generate')
+
+    return parser.parse_args()  #
