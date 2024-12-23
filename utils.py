@@ -2,6 +2,8 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 import base64, random
+from config import DB_PATH, ENCRYPTION_KEY_SIZE, IV_SIZE, DEFAULT_PASSWORD_LENGTH
+
 
 def encrypt_password(password):
     key = get_random_bytes(16)  # Generate a random 128-bit key
@@ -23,9 +25,27 @@ def decrypt_password(encrypted_data, key):
     
     return decrypted.decode('utf-8')
 
-def generate_random_password(length = 16):
-    characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()"
+def generate_random_password(length=16):
+    #character sets
+    uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    lowercase = "abcdefghijklmnopqrstuvwxyz"
+    digits = "0123456789"
+    special = "!@#$%^&*()"
+    
+    #combines all characters
+    characters = uppercase + lowercase + digits + special
+    
+    #list to hold password characters
     password = []
-    for i in range(length):
+    
+    #ensures at least one character from each category (optional)
+    password.append(random.choice(uppercase))
+    password.append(random.choice(lowercase))
+    password.append(random.choice(digits))
+    password.append(random.choice(special))
+    
+    for i in range(length - 4):
         password.append(random.choice(characters))
+    
+    random.shuffle(password)
     return ''.join(password)

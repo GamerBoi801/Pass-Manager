@@ -1,9 +1,11 @@
 import sqlite3, bcrypt
 from user import validate_master_password
 from utils import encrypt_password, decrypt_password
+from config import DB_PATH, ENCRYPTION_KEY_SIZE, IV_SIZE, DEFAULT_PASSWORD_LENGTH
+
 
 def initialize_db():
-    conn = sqlite3.connect('password_manager.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor() #connecting the db to execute commands
     try:
         #creating table in the db
@@ -31,7 +33,7 @@ def initialize_db():
         conn.close() # closes the connection to the db
 
 def add_password(service, username, password):
-    conn = sqlite3.connect('password_manager.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     hashed_password = encrypt_password(password) 
@@ -49,7 +51,7 @@ INSERT INTO Passwords(service_name, username, password)
 
 def get_password(service):
     if validate_master_password():
-        conn = sqlite3.connect('password_manager.db')
+        conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
 
         c.execute('''
@@ -63,7 +65,7 @@ def get_password(service):
 
 def delete_password(service):
     if validate_master_password():
-        conn = sqlite3.connect('password_manager.db')
+        conn = sqlite3.connect(DB_PATH)
         c =conn.cursor()
 
         c. execute('''
@@ -73,7 +75,7 @@ def delete_password(service):
 
 def update_password(service, new_password):
     if validate_master_password():
-        conn = sqlite3.connect('password_manager.db')
+        conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
     
         hashed = encrypt_password(new_password)

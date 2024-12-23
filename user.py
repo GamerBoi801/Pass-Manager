@@ -1,7 +1,8 @@
 #handles all the user realted operations
 import bcrypt, sqlite3, pyfiglet
 from db import initialize_db
-from utils import encrypt_password, decrypt_password
+from utils import encrypt_password, decrypt_password, generate_random_password
+from config import DB_PATH, ENCRYPTION_KEY_SIZE, IV_SIZE, DEFAULT_PASSWORD_LENGTH
 from prettytable import PrettyTable
 import argparse
 
@@ -24,7 +25,7 @@ def first_use():
         print('Passwords do not match! Try Again')
 
     # additions to the database
-    conn = sqlite3.connect('password_manager.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     
     hashed_password = encrypt_password(password2)  
@@ -44,13 +45,12 @@ def first_use():
     finally:
         c.close()
         conn.close() 
-
-
+    
 
 def validate_master_password():
     user_attempt = input('Please enter the Master Password: ')
 
-    conn = sqlite3.connect('password_manager.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     try:
@@ -82,7 +82,7 @@ def list_passwords():
     table = PrettyTable() #creates the PrettyTable obj
     #displays passwords in a pretty table 
 
-    conn = sqlite3.connect('password_manager.db')
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     c.execute('''SELECT service_name, username, password 
