@@ -1,7 +1,0 @@
-password_manager/
-│
-├── db.py                # Database-related functions (initialization, queries)
-├── user.py              # User-related operations (login, password management)
-├── password_manager.py   # Password management functions (add, view, delete passwords)
-├── utils.py             # Utility functions (e.g., password generation)
-└── main.py              # Main application entry point

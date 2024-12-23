@@ -3,6 +3,7 @@ import bcrypt, sqlite3, pyfiglet
 from db import initialize_db
 from rehpic import encrypt_password, decrypt_password
 from prettytable import PrettyTable
+import argparse
 
 
 def first_use():
@@ -72,12 +73,13 @@ def validate_master_password():
         
     except sqlite3.Error as e:
         print(e)
+        return False
     finally:
         c.close()
         conn.close()
 
 def list_passwords():
-    table = PrettyTable()
+    table = PrettyTable() #creates the PrettyTable obj
     #displays passwords in a pretty table 
 
     conn = sqlite3.connect('password_manager.db')
@@ -88,7 +90,17 @@ def list_passwords():
               ''')
     results = c.fetchall()
     
-    #extracting column names
+    #creates a list of the columns names
     column_names = [description[0] for description in c.description()]
-    
 
+    #sets the field names for the PrettyTable
+    table.field_names = column_names
+
+    #adding the rows to the prettytable
+    for row in results:
+        table.add_row(row)
+
+    print(table) #outputs the table
+
+def parse_args(command):
+    
