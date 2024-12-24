@@ -44,9 +44,9 @@ def first_use():
     
     finally:
         c.close()
-        conn.close() 
+        conn.close()
+     
     
-
 def validate_master_password():
     user_attempt = input('Please enter the Master Password: ')
 
@@ -138,4 +138,4 @@ def parse_args():
     create_parser = subparsers.add_parser('create', help='Creates a new random password')
     create_parser.add_argument('length', type=int, help='The length of the password to generate')
 
-    return parser.parse_args()  #
+    return parser.parse_args()  

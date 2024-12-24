@@ -25,7 +25,7 @@ def decrypt_password(encrypted_data, key):
     
     return decrypted.decode('utf-8')
 
-def generate_random_password(length=16):
+def generate_random_password(length = DEFAULT_PASSWORD_LENGTH):
     #character sets
     uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     lowercase = "abcdefghijklmnopqrstuvwxyz"
