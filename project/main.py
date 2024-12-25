@@ -114,7 +114,7 @@ def list_passwords():
     results = c.fetchall()
     
     #creates a list of the columns names
-    column_names = [description[0] for description in c.description()]
+    column_names = [description[0] for description in c.description]
 
     #sets the field names for the PrettyTable
     table.field_names = column_names
@@ -124,6 +124,8 @@ def list_passwords():
         table.add_row(row)
 
     print(table) #outputs the table
+    
+    conn.close()
 
 def parse_args():
     #creates the parser
