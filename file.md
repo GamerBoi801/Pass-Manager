@@ -2,7 +2,7 @@
 
 ## 1. Core Files
 
-### 1.1 `db.py`
+### 1.1 `db_1.py`
 - **Purpose**: Manage database initialization and operations.
 - **Functions to Include**:
   - `initialize_db()`: Create the database and tables if they don't exist.
