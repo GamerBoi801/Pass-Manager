@@ -6,7 +6,7 @@ import base64, random
 import os, sqlite3, pyfiglet, argparse
 
 #CONST
-DB_PATH = 'password_manager.db'  
+DB_PATH = 'password_manager.db' 
 
 #encryption configuration
 ENCRYPTION_KEY_SIZE = 16  # 16BYTES- 128bits
@@ -23,13 +23,13 @@ def validate_master_password():
 
     try:
         c.execute('''
-            SELECT master_password FROM user WHERE id = 1;
+            SELECT master_password, key FROM user WHERE id = 1;
             ''')
         stored_master_password = c.fetchone()
 
         if stored_master_password:
-            stored_master_password = stored_master_password[0]
-            if decrypt_password(stored_master_password) == user_attempt:
+            encrypted, key = stored_master_password
+            if decrypt_password(encrypted, key) == user_attempt:
                 c.close()
                 return True
             else:
@@ -72,7 +72,8 @@ def first_use():
         CREATE TABLE IF NOT EXISTS user(
                   id INTEGER PRIMARY KEY AUTOINCREMENT,
                   username TEXT NOT NULL,
-                  master_password TEXT NOT NULL );
+                  master_password TEXT NOT NULL,
+                  key TEXT NOT NULL);
                   ''')
         conn.commit()
         
@@ -86,11 +87,11 @@ def first_use():
             print('Passwords do not match! Try Again')
         
         # additions to the database
-        hashed_password = encrypt_password(password2)   
+        hashed_password, key = encrypt_password(password2)   
         c.execute('''
-            INSERT INTO user (username, master_password) 
+            INSERT INTO user (username, master_password, key) 
             VALUES (?, ?)
-        ''', (username, hashed_password))
+        ''', (username, hashed_password, key))
         conn.commit()  
         print('Username and master password are set!!')
                 
