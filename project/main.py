@@ -25,7 +25,7 @@ def validate_master_password():
         c.execute('''
             SELECT master_password, key FROM user WHERE id = 1;
             ''')
-        stored_master_password = c.fetchone()
+        stored_master_password = c.fetchall()
 
         if stored_master_password:
             encrypted, key = stored_master_password
