@@ -8,11 +8,6 @@ import os, sqlite3, pyfiglet, argparse
 #CONST
 DB_PATH = 'password_manager.db' 
 
-#encryption configuration
-ENCRYPTION_KEY_SIZE = 16  # 16BYTES- 128bits
-ENCRYPTION_MODE = 'CBC'    # AES mode (CBC)
-IV_SIZE = 16                #size of the initialization vector in bytes
-
 DEFAULT_PASSWORD_LENGTH = 16
 
 def validate_master_password():
@@ -25,7 +20,7 @@ def validate_master_password():
         c.execute('''
             SELECT master_password, key FROM user WHERE id = 1;
             ''')
-        stored_master_password = c.fetchall()
+        stored_master_password = c.fetchone()
 
         if stored_master_password:
             encrypted, key = stored_master_password
@@ -90,7 +85,7 @@ def first_use():
         hashed_password, key = encrypt_password(password2)   
         c.execute('''
             INSERT INTO user (username, master_password, key) 
-            VALUES (?, ?)
+            VALUES (?, ?, ?)
         ''', (username, hashed_password, key))
         conn.commit()  
         print('Username and master password are set!!')
@@ -109,20 +104,29 @@ def list_passwords():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    c.execute('''SELECT service_name, username, password 
+    c.execute('''SELECT service_name, username, password, key 
               FROM Passwords;
               ''')
     results = c.fetchall()
     
     #creates a list of the columns names
-    column_names = [description[0] for description in c.description]
+    column_names = ['Service', 'Username', 'Password']
 
     #sets the field names for the PrettyTable
     table.field_names = column_names
 
     #adding the rows to the prettytable
     for row in results:
-        table.add_row(row)
+        service_name = row[0]
+        username = row[1]
+        encrypted_password = row[2]
+        key = row[3]
+
+
+        #decrypt password
+        decrypted_password = decrypt_password(encrypted_password, key)
+         
+        table.add_row([service_name, username, decrypted_password])
 
     print(table) #outputs the table
     
@@ -176,7 +180,7 @@ def add_password(service, username, password):
     c.execute('''
         INSERT INTO Passwords(service_name, username, password, key) 
               VALUES(?, ?, ?, ?)
-              ''', (service, username, hashed_password, key.hex()) #stores the key as a hex string
+              ''', (service, username, hashed_password, key) #stores the password
               )
 
 
@@ -191,17 +195,20 @@ def get_password(service):
 
         c.execute('''
                   SELECT username, password, key FROM Passwords WHERE service_name = ?;
-                  ''', (service))
-        result = c.fetchone()
-        if result:
-            username, encrypted, key_hex = result
-            key = bytes.fromhex(key)
+                  ''', (service,)) #comma makes it a tuple
+        
+        result = c.fetchall()
+
+        if len(result) == 1:
+            username = result[0][0]
+            encrypted = result[0][1]
+            key = result[0][2]
 
             decrypted = decrypt_password(encrypted, key)
 
             print(f'Service: {service}, Username: {username}, Password: {decrypted}')
         else:
-            print('No password found for this service.')
+            print(f'No password found for {service}.')
         conn.close()
 
 def delete_password(service):
@@ -210,9 +217,12 @@ def delete_password(service):
         c =conn.cursor()
 
         c. execute('''
-                DELETE FROM Passwords WHERE service_name = ?''', service)
+                DELETE FROM Passwords WHERE service_name = ?; ''', 
+                (service,))
+
         conn.commit()
         conn.close()
+        print(f'Deleted password for {service}')
 
 def update_password(service, new_password):
     if validate_master_password():
@@ -222,34 +232,43 @@ def update_password(service, new_password):
         hashed, key = encrypt_password(new_password)
         #updates the password field with the new one
         c. execute('''
-                UPDATE Passswords SET password = ?, key = ?
+                UPDATE Passwords SET password = ?, key = ?
                     WHERE service_name = ?;
                 ''', (hashed, key, service))
+                
         
         conn.commit()
         conn.close()
+        print(f'Updated password for {service}')
 
 def encrypt_password(password):
-    key = get_random_bytes(16)  # Generate a random 128-bit key
+    key = get_random_bytes(16)  #random 128-bit key
     cipher = AES.new(key, AES.MODE_CBC)
-    iv = cipher.iv  # Initialization vector
+    iv = cipher.iv  #initialization vector
     ciphertext = cipher.encrypt(pad(password.encode('utf-8'), AES.block_size))
     
-    # Return only the IV and ciphertext encoded in base64 for storage
+    #returns only the IV and ciphertext encoded in base64 for storage
     encrypted_data = base64.b64encode(iv + ciphertext).decode('utf-8')
     
-    # Return the encrypted password as a string
-    return encrypted_data, key 
+    #encodes the key as Base64 for storage
+    encoded_key = base64.b64encode(key).decode('utf-8')
+    
+    #returns the encrypted password as a string and the encoded key
+    return encrypted_data, encoded_key
 
-def decrypt_password(encrypted_data, key):
+def decrypt_password(encrypted_data, encoded_key):
+    #decodes Base64 encoded key back to bytes
+    key = base64.b64decode(encoded_key)
+    
     encrypted_data = base64.b64decode(encrypted_data)
-    iv = encrypted_data[:16]  # Extract the IV from the beginning
-    ciphertext = encrypted_data[16:]  # The rest is the ciphertext
+    iv = encrypted_data[:16]   #extracts the IV from the beginning
+    ciphertext = encrypted_data[16:]  # ciphertxt
     
     cipher = AES.new(key, AES.MODE_CBC, iv)
     decrypted = unpad(cipher.decrypt(ciphertext), AES.block_size)
     
     return decrypted.decode('utf-8')
+
 
 def generate_random_password(length = DEFAULT_PASSWORD_LENGTH):
     #character sets
@@ -296,7 +315,8 @@ def main():
         elif args.command == 'delete':
             delete_password(args.service)
         elif args.command == 'create':
-            generate_random_password(args.length)
+            result = generate_random_password(args.length)
+            print(f'Generated Password: {result}')
     except Exception as e:
         print(f'An error ocurred: {e}')
 
