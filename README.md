@@ -1,20 +1,37 @@
 # CLI Password Manager
 
-A secure command-line password manager that allows users to store and manage passwords using encryption.
+A secure command-line password manager that allows users to store and manage passwords using encryption. Works seamlessly across Linux and Windows.
 
 ## Table of Contents
+- [Features](#features)
+- [Usage Commands](#usage-commands)
+- [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Required Libraries](#required-libraries)
+- [Security Consideration](#security-considerations)
+- [Contributing](#contributing)
+- [Configuration](#configuration)
+- [Contact](#contact-information)
 
 
 
 ## Features
 
 - **Add Passwords**: Store service credentials securely.
-- **Retrieve Passwords**: Fetch and decrypt passwords for specific services.
-- **Update Passwords**: Modify existing passwords.
-- **Delete Passwords**: Remove stored passwords.
+- **Retrieves Passwords**: Fetch and decrypt passwords for specific services.
+- **Update Password**: Modify existing passwords for existing services.
+- **Delete Passwords**: Removes stored passwords.
 - **List All Passwords**: Display all stored passwords in a formatted table.
-- **Generate Random Passwords**: Create strong, random passwords.
+- **Generate Random Passwords**: Creates strong, random passwords.
 - **Security**: Uses AES-128 encryption with a unique initialization vector for each password, ensuring secure storage of sensitive info.
+
+
+### Usage Commands
+
+The following commands can be used with the Password Manager application. You can execute these commands from the command line:
+
+![refer to [here](project/usage.bash)](project/image.png)
+
 
 ## Installation
 
@@ -34,3 +51,25 @@ Before you begin, ensure you have the following installed:
 - `random`: for generating random passwords.
 - `os`: for interacting with the operating system.
 
+## Security Considerations
+
+- Always use strong, unique passwords for each service.
+- Regularly update your passwords.
+- Ensure that your local environment is secure.
+
+## Contributing
+
+Contributions are welcome! Please follow these steps to contribute:
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/YourFeature`).
+3. Make your changes and commit them (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/YourFeature`).
+5. Open a Pull Request.
+
+## Configuration
+
+You can configure the application by modifying the `config.py` file. Here you can set parameters such as the database path and encryption settings.
+
+## Contact Information
+
+For questions or support, please reach out to me at MSK_working@proton.me

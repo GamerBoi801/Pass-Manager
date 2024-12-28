@@ -1,8 +1,0 @@
-
-• add d
-• get d
-• first-use d
-• list-all d
-• update d
-• delete d 
-• create 

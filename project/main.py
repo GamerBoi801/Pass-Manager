@@ -2,13 +2,10 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 from prettytable import PrettyTable
+from config import BLOCK_SIZE, KEY_SIZE, DEFAULT_PASSWORD_LENGTH, DB_PATH
 import base64, random
 import os, sqlite3, pyfiglet, argparse
 
-#CONST
-DB_PATH = 'password_manager.db' 
-
-DEFAULT_PASSWORD_LENGTH = 16
 
 def validate_master_password():
     user_attempt = input('Please enter the Master Password: ')
@@ -51,7 +48,7 @@ def first_use():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor() #connecting the db to execute commands
     try:
-        #creating passwordd table in the db
+        #creating password table in the db
         c.execute('''
               CREATE TABLE IF NOT EXISTS Passwords(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,7 +69,7 @@ def first_use():
                   ''')
         conn.commit()
         
-        # creting and saving the master password and username
+        # creating and saving the master password and username
         username = input('Please Enter a username: ')
         while True:
             password1 = input('Please Enter a Master Password: ')
@@ -98,43 +95,44 @@ def first_use():
 
 
 def list_passwords():
-    table = PrettyTable() #creates the PrettyTable obj
-    #displays passwords in a pretty table 
+    if validate_master_password():
+        table = PrettyTable() #creates the PrettyTable obj
+        #displays passwords in a pretty table 
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
 
-    c.execute('''SELECT service_name, username, password, key 
-              FROM Passwords;
-              ''')
-    results = c.fetchall()
-    
-    #creates a list of the columns names
-    column_names = ['Service', 'Username', 'Password']
+        c.execute('''SELECT service_name, username, password, key 
+                  FROM Passwords;
+                  ''')
+        results = c.fetchall()
 
-    #sets the field names for the PrettyTable
-    table.field_names = column_names
+        #creates a list of the columns names
+        column_names = ['Service', 'Username', 'Password']
 
-    #adding the rows to the prettytable
-    for row in results:
-        service_name = row[0]
-        username = row[1]
-        encrypted_password = row[2]
-        key = row[3]
+        #sets the field names for the PrettyTable
+        table.field_names = column_names
+
+        #adding the rows to the prettytable
+        for row in results:
+            service_name = row[0]
+            username = row[1]
+            encrypted_password = row[2]
+            key = row[3]
 
 
-        #decrypt password
-        decrypted_password = decrypt_password(encrypted_password, key)
-         
-        table.add_row([service_name, username, decrypted_password])
+            #decrypt password
+            decrypted_password = decrypt_password(encrypted_password, key)
 
-    print(table) #outputs the table
-    
-    conn.close()
+            table.add_row([service_name, username, decrypted_password])
+
+        print(table) #outputs the table
+
+        conn.close()
 
 def parse_args():
     #creates the parser
-    parser = argparse.ArgumentParser(description='Password Manager Tool')
+    parser = argparse.ArgumentParser(description='CLI Password Manager')
 
     #subparsers for different commands
     subparsers = parser.add_subparsers(dest='command')
@@ -242,33 +240,32 @@ def update_password(service, new_password):
         print(f'Updated password for {service}')
 
 def encrypt_password(password):
-    key = get_random_bytes(16)  #random 128-bit key
+    key = get_random_bytes(KEY_SIZE)  # Random key based on config
     cipher = AES.new(key, AES.MODE_CBC)
-    iv = cipher.iv  #initialization vector
-    ciphertext = cipher.encrypt(pad(password.encode('utf-8'), AES.block_size))
+    iv = cipher.iv  # Initialization vector
+    ciphertext = cipher.encrypt(pad(password.encode('utf-8'), BLOCK_SIZE))
     
-    #returns only the IV and ciphertext encoded in base64 for storage
+    # Returns only the IV and ciphertext encoded in base64 for storage
     encrypted_data = base64.b64encode(iv + ciphertext).decode('utf-8')
     
-    #encodes the key as Base64 for storage
+    # Encodes the key as Base64 for storage
     encoded_key = base64.b64encode(key).decode('utf-8')
     
-    #returns the encrypted password as a string and the encoded key
+    # Returns the encrypted password as a string and the encoded key
     return encrypted_data, encoded_key
 
 def decrypt_password(encrypted_data, encoded_key):
-    #decodes Base64 encoded key back to bytes
+    # Decodes Base64 encoded key back to bytes
     key = base64.b64decode(encoded_key)
     
     encrypted_data = base64.b64decode(encrypted_data)
-    iv = encrypted_data[:16]   #extracts the IV from the beginning
-    ciphertext = encrypted_data[16:]  # ciphertxt
+    iv = encrypted_data[:BLOCK_SIZE]   # Extracts the IV from the beginning
+    ciphertext = encrypted_data[BLOCK_SIZE:]  # Ciphertext
     
     cipher = AES.new(key, AES.MODE_CBC, iv)
-    decrypted = unpad(cipher.decrypt(ciphertext), AES.block_size)
+    decrypted = unpad(cipher.decrypt(ciphertext), BLOCK_SIZE)
     
     return decrypted.decode('utf-8')
-
 
 def generate_random_password(length = DEFAULT_PASSWORD_LENGTH):
     #character sets
@@ -318,7 +315,7 @@ def main():
             result = generate_random_password(args.length)
             print(f'Generated Password: {result}')
     except Exception as e:
-        print(f'An error ocurred: {e}')
+        print(f'An error occurred: {e}')
 
 if __name__ == '__main__':
     main()
