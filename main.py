@@ -2,7 +2,7 @@ import os, sqlite3, pyfiglet, argparse, bcrypt
 import secrets, string, random, getpass
 from prettytable import PrettyTable
 
-#const
+#constants
 # Database path for storing passwords
 DB_PATH = 'password_manager.db'
 

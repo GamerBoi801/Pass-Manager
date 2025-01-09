@@ -43,13 +43,14 @@ Before you begin, ensure you have the following installed:
 
 ### Required Libraries
 
-- `pycryptodome`: for encryption and decryption of passwords.
 - `prettytable`: for displaying data in a formatted table.
 - `sqlite3`: for database management (this is included with Python's standard library).
 - `argparse`: for parsing command-line arguments.
-- `base64`: for encoding and decoding data.
 - `random`: for generating random passwords.
 - `os`: for interacting with the operating system.
+- `bcrypt`: for encrypting passwords.
+- `getpass`: Allow confidential input of passwords on the CLI.
+- `secrets`: More secure randomness.
 
 ## Security Considerations
 
@@ -66,10 +67,5 @@ Contributions are welcome! Please follow these steps to contribute:
 4. Push to the branch (`git push origin feature/YourFeature`).
 5. Open a Pull Request.
 
-## Configuration
-
-You can configure the application by modifying the `config.py` file. Here you can set parameters such as the database path and encryption settings.
-
 ## Contact Information
-
 For questions or support, please reach out to me at MSK_working@proton.me

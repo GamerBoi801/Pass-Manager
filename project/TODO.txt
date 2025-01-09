@@ -6,3 +6,4 @@
 • Secrets lib ; secrets.choice ✅
 • removing show)password, get_password ✅
 • replacing with password_reset 
+• Update the Usage Image and .bash
