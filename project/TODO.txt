@@ -1,0 +1,4 @@
+• bcrypt
+• SQL injection attacks prevention
+• secrets lib for cryptographically secure functions
+• 
