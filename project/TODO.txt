@@ -1,4 +1,8 @@
-• bcrypt
-• SQL injection attacks prevention
-• secrets lib for cryptographically secure functions
-• key storing
+    version 2.0
+• bcrypt ✅
+• SQL injection attacks prevention ✅
+• secrets lib for cryptographically secure functions ✅
+- limits on password creator ✅
+• Secrets lib ; secrets.choice ✅
+• removing show)password, get_password ✅
+• replacing with password_reset 
