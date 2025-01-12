@@ -1,13 +1,12 @@
-usage: main.py [-h] {add,get,first-use,list-all,update,delete,create}
+usage: main.py [-h] {add,first-use,update,delete,create} ...
 
 CLI Password Manager
 
 positional arguments:
-  {add,get,first-use,list-all,update,delete,create}
+  {add,first-use,update,delete,create}
+  
     add                 Add a new password
-    get                 Fetches the password for a service
-    first-use           Initializes the program for first use
-    list-all            Lists all the passwords stored in the db
+    first-use           Initializes the program for first use/ Also to be used in case of an error
     update              Command to update a password for a service
     delete              Delete the password for that service
     create              Creates a new random password

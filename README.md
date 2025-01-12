@@ -18,13 +18,10 @@ A secure command-line password manager that allows users to store and manage pas
 ## Features
 
 - **Add Passwords**: Store service credentials securely.
-- **Retrieves Passwords**: Fetch and decrypt passwords for specific services.
 - **Update Password**: Modify existing passwords for existing services.
 - **Delete Passwords**: Removes stored passwords.
-- **List All Passwords**: Display all stored passwords in a formatted table.
 - **Generate Random Passwords**: Creates strong, random passwords.
 - **Security**: Uses AES-128 encryption with a unique initialization vector for each password, ensuring secure storage of sensitive info.
-
 
 ### Usage Commands
 
@@ -69,3 +66,11 @@ Contributions are welcome! Please follow these steps to contribute:
 
 ## Contact Information
 For questions or support, please reach out to me at MSK_working@proton.me
+
+## Changes from Version 1.00 - 2.00:
+- removing config.py with bcrypt
+ - removing get_password , show_password
+ - remvoing the encrypt and decrypt algorithms
+- adding reset password
+- changing encryption to bcrypt
+- changing the schema to remove key column
