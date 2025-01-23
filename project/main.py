@@ -9,6 +9,10 @@ DB_PATH = 'password_manager.db'
 # Default password length for generated passwords
 DEFAULT_PASSWORD_LENGTH = 16
 
+#options [y/n]
+yes = ['yes', 'y']
+no = ['no', 'n']
+
 def validate_master_password():
     user_attempt = getpass.getpass('Please enter the Master Password: ')
 
@@ -235,6 +239,17 @@ def main():
         elif args.command == 'create':
             result = generate_random_password(args.length)
             print(f'Generated Password: {result}')
+            
+            choice = input("Would you like to add this to the database [y/n]: ").strip().lower()
+            #validating user choice
+            
+            if choice in yes:
+                service = input('Enter the service name: ')
+                username = input('Enter the username: ')
+                add_password(service, username, result)
+            elif choice in no:
+                print('Password not added to the database')
+
     except Exception as e:
         print(f'An error occurred: {e}')
 
