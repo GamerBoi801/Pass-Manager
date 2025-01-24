@@ -52,8 +52,8 @@ Before you begin, ensure you have the following installed:
 ## Security Considerations
 
 - Always use strong, unique passwords for each service.
-- Regularly update your passwords.
-- Ensure that your local environment is secure.
+- Regularly update your passwords, and avoid reusing them across services.
+- Ensure that your local environment is secure by keeping your OS updated.
 
 ## Contributing
 
@@ -74,3 +74,9 @@ For questions or support, please reach out to me at MSK_working@proton.me
 - adding reset password
 - changing encryption to bcrypt
 - changing the schema to remove key column
+
+## Getting Started 
+
+### Initial Setup 
+
+Follow these steps to set up the CLI password manager for the first time: 

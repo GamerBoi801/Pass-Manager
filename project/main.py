@@ -1,4 +1,4 @@
-import os, sqlite3, pyfiglet, argparse, bcrypt
+import os, sqlite3, pyfiglet, argparse, bcrypt, typer
 import secrets, string, random, getpass
 from prettytable import PrettyTable
 
@@ -9,14 +9,19 @@ DB_PATH = 'password_manager.db'
 # Default password length for generated passwords
 DEFAULT_PASSWORD_LENGTH = 16
 
+app = typer.Typer(help="CLI Password Manager")
+
 #options [y/n]
 yes = ['yes', 'y']
 no = ['no', 'n']
 
+def db_connection():
+    return sqlite3.connect(DB_PATH) 
+
 def validate_master_password():
     user_attempt = getpass.getpass('Please enter the Master Password: ')
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = db_connection()
     c = conn.cursor()
 
     try:
@@ -51,7 +56,7 @@ def first_use():
     print(pyfiglet.figlet_format(txt))
     
     #initialize_db()
-    conn = sqlite3.connect(DB_PATH)
+    conn = db_connection()
     c = conn.cursor() #connecting the db to execute commands
     try:
         #creating password table in the db
@@ -103,7 +108,7 @@ def first_use():
         conn.close()
 
 
-
+@app.command()
 def parse_args():
     #creates the parser
     parser = argparse.ArgumentParser(description='CLI Password Manager')
@@ -135,8 +140,10 @@ def parse_args():
 
     return parser.parse_args()  
 
+@app.command()
 def add_password(service, username, password):
-    conn = sqlite3.connect(DB_PATH)
+    
+    conn = db_connection()
     c = conn.cursor()
 
     salt = bcrypt.gensalt()
@@ -155,10 +162,10 @@ def add_password(service, username, password):
     
     print(f'Password Added for {service}!!')
 
-
+@app.command()
 def delete_password(service):
     if validate_master_password():
-        conn = sqlite3.connect(DB_PATH)
+        conn = db_connection()
         c = conn.cursor()
 
         c. execute('''
@@ -172,7 +179,8 @@ def delete_password(service):
 
 def update_password(service, new_password):
     if validate_master_password():
-        conn = sqlite3.connect(DB_PATH)
+
+        conn = db_connection()
         c = conn.cursor()
 
         new_password = new_password.encode('utf-8')
@@ -190,7 +198,7 @@ def update_password(service, new_password):
         conn.close()
         print(f'Updated password for {service}')
 
-
+@app.command()
 def generate_random_password(length=DEFAULT_PASSWORD_LENGTH):
     if length < DEFAULT_PASSWORD_LENGTH:
         print('Password length must be at least 16 characters')
@@ -222,6 +230,7 @@ def generate_random_password(length=DEFAULT_PASSWORD_LENGTH):
 
 
 def main():
+    app()
     if not(os.path.exists(DB_PATH)):
         first_use()  
        
