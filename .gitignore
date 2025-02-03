@@ -3,3 +3,4 @@ outline.md
 *.log
 *.tmp
 /project/password_manager.db
+/Pass-Manager 
