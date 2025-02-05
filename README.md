@@ -14,10 +14,6 @@ A secure command-line password manager that allows users to store and manage pas
 - [Contact](#contact-information)
 
 
-
-
-
-
 ## Features
 
 - **Add Passwords**: Store service credentials securely.

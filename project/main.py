@@ -2,6 +2,7 @@ import os, sqlite3, pyfiglet, argparse, bcrypt, typer
 import secrets, string, random, getpass
 from prettytable import PrettyTable
 
+
 #constants
 # Database path for storing passwords
 DB_PATH = 'password_manager.db'
@@ -10,10 +11,6 @@ DB_PATH = 'password_manager.db'
 DEFAULT_PASSWORD_LENGTH = 16
 
 app = typer.Typer(help="CLI Password Manager")
-
-#options [y/n]
-yes = ['yes', 'y']
-no = ['no', 'n']
 
 def db_connection():
     return sqlite3.connect(DB_PATH) 
@@ -31,10 +28,12 @@ def validate_master_password():
         stored_master_password = c.fetchone()
 
         if stored_master_password:
+
             hashed_password = stored_master_password[0]
+
             if bcrypt.checkpw(user_attempt.encode('utf-8'), hashed_password):                   
-                c.close()
                 return True
+            
             else:
                 print('ACCESS DENIED: WRONG MASTER PASSWORD. ')
                 return False
@@ -50,14 +49,15 @@ def validate_master_password():
         conn.close()
 
 def first_use():
+    """intialise the password manager for first time user for the user to set the master password"""
     
-    # this intialises everything for first time use
     txt = 'Welcome to the Password Manager!! '
     print(pyfiglet.figlet_format(txt))
     
     #initialize_db()
     conn = db_connection()
     c = conn.cursor() #connecting the db to execute commands
+    
     try:
         #creating password table in the db
         c.execute('''
@@ -81,6 +81,7 @@ def first_use():
         
         # creating and saving the master password and username
         username = input('Please Enter a username: ')
+       
         while True:
             password1 = getpass.getpass('Please Enter a Master Password: ')
             password2 = getpass.getpass('Re-enter the Master Password: ')
@@ -88,11 +89,11 @@ def first_use():
                 break
             print('Passwords do not match! Try Again')
         
-        # additions to the database
-        #encrypting 
+        # adding the master_passsord to the db
         password2 = password2.encode('utf-8')
         key = bcrypt.gensalt()
         hashed_password= bcrypt.hashpw(password2, key)   
+        
         c.execute('''
             INSERT INTO user (username, master_password) 
             VALUES (?, ?)
@@ -109,40 +110,8 @@ def first_use():
 
 
 @app.command()
-def parse_args():
-    #creates the parser
-    parser = argparse.ArgumentParser(description='CLI Password Manager')
-
-    #subparsers for different commands
-    subparsers = parser.add_subparsers(dest='command')
-
-    #subparser for add_password(service, username, password)
-    add_parser = subparsers.add_parser('add', help='Add a new password')
-    add_parser.add_argument('service', help='Name of the service')
-    add_parser.add_argument('username', help='Username for that service')
-    add_parser.add_argument('password', help='Password for that service')
-
-    #subparser for first_use()
-    first_parser = subparsers.add_parser('first-use', help='Initializes the program for first use/ Also to be used in case of an error')
-
-    #subparser for update_password(service, new_password)
-    update_parser = subparsers.add_parser('update', help='Command to update a password for a service')
-    update_parser.add_argument('service', help='Service for which the password is updated')
-    update_parser.add_argument('new_password', help='The new updated password')
-
-    #subparser delete_password(service)
-    del_parser = subparsers.add_parser('delete', help='Delete the password for that service')
-    del_parser.add_argument('service', help='Service for which the password would be deleted')
-
-    #subparser generate_random_password(length)
-    create_parser = subparsers.add_parser('create', help='Creates a new random password')
-    create_parser.add_argument('length', type=int, help='The length of the password to generate :: Should be more than 16 characters')
-
-    return parser.parse_args()  
-
-@app.command()
-def add_password(service, username, password):
-    
+def add(service, username, password):
+    """Adding a new password for a service"""
     conn = db_connection()
     c = conn.cursor()
 
@@ -153,17 +122,18 @@ def add_password(service, username, password):
     c.execute('''
         INSERT INTO Passwords(service_name, username, password) 
               VALUES(?, ?, ?)
-              ''', (service, username, hashed_password) #stores the password
+              ''', (service, username, hashed_password)   #stores the password
               )
-
 
     conn.commit()
     conn.close()
     
     print(f'Password Added for {service}!!')
 
+
 @app.command()
-def delete_password(service):
+def delete(service):
+    """Delete a password for a service."""
     if validate_master_password():
         conn = db_connection()
         c = conn.cursor()
@@ -177,7 +147,8 @@ def delete_password(service):
         print(f'Deleted password for {service}')
 
 
-def update_password(service, new_password):
+def update(service, new_password):
+    """Update an exsisting passwod for a specific """
     if validate_master_password():
 
         conn = db_connection()
@@ -234,33 +205,7 @@ def main():
     if not(os.path.exists(DB_PATH)):
         first_use()  
        
-    args = parse_args()
-    try:
-        #execute commands based on parsed arguments
-        if args.command == 'add':
-            add_password(args.service, args.username, args.password)
-        elif args.command == 'first-use':
-            first_use()
-        elif args.command == 'update':
-            update_password(args.service, args.new_password)
-        elif args.command == 'delete':
-            delete_password(args.service)
-        elif args.command == 'create':
-            result = generate_random_password(args.length)
-            print(f'Generated Password: {result}')
-            
-            choice = input("Would you like to add this to the database [y/n]: ").strip().lower()
-            #validating user choice
-            
-            if choice in yes:
-                service = input('Enter the service name: ')
-                username = input('Enter the username: ')
-                add_password(service, username, result)
-            elif choice in no:
-                print('Password not added to the database')
-
-    except Exception as e:
-        print(f'An error occurred: {e}')
+  
 
 if __name__ == '__main__':
     main()
