@@ -4,3 +4,6 @@ outline.md
 *.tmp
 /project/password_manager.db
 /Pass-Manager 
+/venv/
+/build
+/password_manager
