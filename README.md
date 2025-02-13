@@ -8,6 +8,7 @@ A secure command-line password manager that allows users to store and manage pas
 - [Installation](#installation)
     - [Prerequisites](#prerequisites)
     - [Required Libraries](#required-libraries)
+    - [Steps to Install](#steps-to-install)
 - [Security Consideration](#security-considerations)
 - [Contributing](#contributing)
 - [Configuration](#configuration)
@@ -53,6 +54,11 @@ Before you begin, ensure you have the following installed:
 - Always use strong, unique passwords for each service.
 - Regularly update your passwords, and avoid reusing them across services.
 - Ensure that your local environment is secure by keeping your OS updated.
+
+## Steps to Install 
+
+1. **Clone the repository**: 
+
 
 ## Contributing
 
