@@ -23,13 +23,6 @@ A secure command-line password manager that allows users to store and manage pas
 - **Generate Random Passwords**: Creates strong, random passwords.
 - **Security**: Uses AES-128 encryption with a unique initialization vector for each password, ensuring secure storage of sensitive info.
 
-### Usage Commands
-
-The following commands can be used with the Password Manager application. You can execute these commands from the command line:
-
-![refer to [here](project/usage.bash)](project/image.png)
-
-
 ## Installation
 
 ### Prerequisites
@@ -58,7 +51,27 @@ Before you begin, ensure you have the following installed:
 ## Steps to Install 
 
 1. **Clone the repository**: 
+    ```bash
+    git clone https://github.com/GamerBoi801/Pass-Manager.git
+    
+    cd Pass-Manager
+    ```
 
+2. **Create a virtual environment** (optional but recommended):
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+
+3. **Install the required libraries**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. **Run the application**:
+    ```bash
+    python pass_manager.py
+    ```
 
 ## Contributing
 
@@ -84,4 +97,13 @@ For questions or support, please reach out to me at MSK_working@proton.me
 
 ### Initial Setup 
 
-Follow these steps to set up the CLI password manager for the first time: 
+Follow these steps to set up the CLI password manager for the first time:
+
+1. **Initialize the database**:
+    ```bash
+    python pass_manager.py first-use
+    ```
+2. **Start using the password manager**:
+    ```bash
+    python pass_manager.py --help
+    ```
