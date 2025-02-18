@@ -1,0 +1,17 @@
+.:
+build
+__init__.py
+outline.md
+project
+README.md
+setup.py
+strcut.txt
+usage.bash
+
+./build:
+bdist.linux-x86_64
+
+./build/bdist.linux-x86_64:
+
+./project:
+main.py

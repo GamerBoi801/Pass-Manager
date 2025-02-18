@@ -1,0 +1,4 @@
+typer
+bcrypt
+pyfiglet
+prettytable
